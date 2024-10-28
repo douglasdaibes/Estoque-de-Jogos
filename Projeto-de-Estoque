@@ -1,0 +1,145 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <locale.h>
+
+#define MAX_JOGOS 100
+#define MAX_VENDAS 100
+
+typedef struct {
+    int codigo;
+    char nome[50];
+    char plataforma[20];
+    float preco;
+    int quantidade;
+} Jogo;
+
+typedef struct {
+    int codigo_jogo;
+    int quantidade_vendida;
+    float total_venda;
+} Venda;
+
+Jogo jogos[MAX_JOGOS];
+Venda vendas[MAX_VENDAS];
+int total_jogos = 0;
+int total_vendas = 0;
+
+void cadastrarProduto() {
+    if (total_jogos >= MAX_JOGOS) {
+        printf("Limite de produtos atingido!\n");
+        return;
+    }
+
+    Jogo novoJogo;
+    printf("Digite o código do jogo: ");
+    scanf("%d", &novoJogo.codigo);
+    printf("Digite o nome do jogo: ");
+    scanf(" %[^\n]", novoJogo.nome);
+    printf("Digite a plataforma do jogo: ");
+    scanf(" %[^\n]", novoJogo.plataforma);
+    printf("Digite o preço do jogo: ");
+    scanf("%f", &novoJogo.preco);
+    printf("Digite a quantidade em estoque: ");
+    scanf("%d", &novoJogo.quantidade);
+
+    jogos[total_jogos] = novoJogo;
+    total_jogos++;
+    printf("Jogo cadastrado com sucesso!\n");
+}
+
+void consultarEstoque() {
+	int i;
+    char criterio[50];
+    printf("Digite o nome, plataforma ou código do jogo para consulta: ");
+    scanf(" %[^\n]", criterio);
+
+    for (i = 0; i < total_jogos; i++) {
+        if (strcmp(jogos[i].nome, criterio) == 0 || 
+            strcmp(jogos[i].plataforma, criterio) == 0 || 
+            jogos[i].codigo == atoi(criterio)) {
+            printf("Código: %d\n", jogos[i].codigo);
+            printf("Nome: %s\n", jogos[i].nome);
+            printf("Plataforma: %s\n", jogos[i].plataforma);
+            printf("Preço: R$ %.2f\n", jogos[i].preco);
+            printf("Quantidade em estoque: %d\n", jogos[i].quantidade);
+            return;
+        }
+    }
+    printf("Jogo não encontrado!\n");
+}
+
+void registrarVenda() {
+	int i;
+    if (total_vendas >= MAX_VENDAS) {
+        printf("Limite de vendas atingido!\n");
+        return;
+    }
+
+    int codigo_jogo, quantidade;
+    printf("Digite o código do jogo para venda: ");
+    scanf("%d", &codigo_jogo);
+    printf("Digite a quantidade a ser vendida: ");
+    scanf("%d", &quantidade);
+
+    for (i = 0; i < total_jogos; i++) {
+        if (jogos[i].codigo == codigo_jogo) {
+            if (jogos[i].quantidade < quantidade) {
+                printf("Estoque insuficiente para a venda!\n");
+                return;
+            }
+            jogos[i].quantidade -= quantidade;
+
+            float total_venda = quantidade * jogos[i].preco;
+
+            vendas[total_vendas].codigo_jogo = codigo_jogo;
+            vendas[total_vendas].quantidade_vendida = quantidade;
+            vendas[total_vendas].total_venda = total_venda;
+            total_vendas++;
+
+            printf("Venda registrada com sucesso! Total: R$ %.2f\n", total_venda);
+            return;
+        }
+    }
+    printf("Jogo não encontrado!\n");
+}
+
+void menu() {
+    int opcao;
+    do {
+        printf("\nSistema de Gerenciamento de Estoque\n");
+        printf("1. Cadastrar Produto\n");
+        printf("2. Consultar Estoque\n");
+        printf("3. Registrar Venda\n");
+        printf("4. Sair\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                cadastrarProduto();
+                break;
+            case 2:
+                consultarEstoque();
+                break;
+            case 3:
+                registrarVenda();
+                break;
+            case 4:
+                printf("Saindo do sistema...\n");
+                break;
+            default:
+                printf("Saindo do sistema...\n");
+                break;
+            
+                printf("Opção inválida! Tente novamente.\n");
+        }
+    } while (opcao != 4);
+}
+
+int main() {
+	setlocale(LC_ALL, "Portuguese");
+    menu();
+    return 0;
+}
+
