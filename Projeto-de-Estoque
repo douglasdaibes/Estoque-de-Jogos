@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <locale.h>
 
-#define MAX_JOGOS 100
-#define MAX_VENDAS 100
+#define Limite_Jogos 100
+#define Limite_Vendas 100
 
 typedef struct {
     int codigo;
@@ -20,13 +20,13 @@ typedef struct {
     float total_venda;
 } Venda;
 
-Jogo jogos[MAX_JOGOS];
-Venda vendas[MAX_VENDAS];
+Jogo jogos[Limite_Jogos];
+Venda vendas[Limite_Vendas];
 int total_jogos = 0;
 int total_vendas = 0;
 
 void cadastrarProduto() {
-    if (total_jogos >= MAX_JOGOS) {
+    if (total_jogos >= Limite_Jogos) {
         printf("Limite de produtos atingido!\n");
         return;
     }
@@ -71,7 +71,7 @@ void consultarEstoque() {
 
 void registrarVenda() {
 	int i;
-    if (total_vendas >= MAX_VENDAS) {
+    if (total_vendas >= Limite_Vendas) {
         printf("Limite de vendas atingido!\n");
         return;
     }
